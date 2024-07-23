@@ -1,0 +1,9 @@
+langchain
+langchain-core
+langchain-community
+langgraph
+langchain_anthropic
+python-dotenv
+langchainhub
+pymongo
+yfinance
