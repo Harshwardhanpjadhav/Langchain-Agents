@@ -4,12 +4,24 @@ from langchain.pydantic_v1 import BaseModel, Field
 from langchain.tools import BaseTool, StructuredTool, tool
 from typing import Optional, Type
 import os
+from langchain_community.utilities.alpha_vantage import AlphaVantageAPIWrapper
+alpha_vantage = AlphaVantageAPIWrapper()
 from dotenv import find_dotenv, load_dotenv
 
 dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 mongo_uri = os.getenv('MONGODB_URI')
 
+journal_sentiment={
+  "user_id": "id of the user which is unique for all and the type is integer",
+  "date": "Date on which journal note was creted",
+  "trading_pair": "it is also called as the symbol, trading_pari or asset",
+  "sentiment": "It is the sentiment of the journal note which is positive, negative and neutral",
+  "journal_notes": "This field cotains the users journal notes",
+  "clean_notes": "this filed conatin the preprocessing of the journal_notes",
+  "confidence_score": "it indicates the how confidence is the sentiment",
+  "important_words": "this filed contains the words that contributed most to the sentiment"
+}
 trade_history ={
   "user_id": "id of the user which is unique for all and the type is integer",
   "symbol": "symbol of the trade also called as asset and trading pair",
@@ -93,3 +105,29 @@ def tradehistory(query):
     results = collection.aggregate(mongo_query)
     result_list = [str(result) for result in results]
     return "\n".join(result_list)
+
+def journalsentiment(query):
+    from pymongo import MongoClient
+    client = MongoClient(mongo_uri)
+    db = client["processed_user_data"]
+    collection = db["trade_journal_sentiment"]
+    print(f"Received query: {query}")
+
+    try:
+        mongo_query = json.loads(query)
+    except json.JSONDecodeError:
+        return "Invalid query format. Please provide a valid JSON query."
+
+    print(f"MongoDB query: {mongo_query}")
+
+    results = collection.aggregate(mongo_query)
+    result_list = [str(result) for result in results]
+    return "\n".join(result_list)
+
+
+def symbol_sentiment(query):
+    return alpha_vantage._get_market_news_sentiment(query)
+
+
+
+
