@@ -38,7 +38,7 @@ tools = [
     Tool(
         name="trade history",
         func=tradehistory,
-        description=f"Useful to create a mongodb aggregate pipeline for example {pipeline} is should be in list to retrivew data use this Database and document info {trade_history} to create a relevant queries in dictinoary format",
+        description=f"Useful to get the user Trade history details and Useful to create a mongodb aggregate pipeline for example {pipeline} is should be in list to retrivew data use this Database and document info {trade_history} to create a relevant queries in dictinoary format",
     ),
     Tool(
         name="symbol sentiment",
